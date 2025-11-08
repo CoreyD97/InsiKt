@@ -36,36 +36,36 @@ To enable logs to be used in other systems, the table can also be uploaded to el
 
 ## ✨ Features
 
-- 📊 **Comprehensive Logging** - Logs all tools sending requests and receiving responses
-- 🎯 **Selective Logging** - Ability to log from specific tools
-- 🔍 **Custom Regex Support** - Show results of custom regular expressions in request/response
-- ⚙️ **Customizable Headers** - Personalize column headers to your preferences
-- 🎨 **Advanced Filtering** - Create filters to display only requests matching specific strings or regex patterns
-- 🌈 **Row Highlighting** - Make interesting requests pop with filter-based highlighting
-- 🔎 **Built-in Grep** - Search through logs efficiently
-- ⚡ **Live Monitoring** - Real-time requests and responses
-- 👁️ **Multiple Views** - Various display options to suit your workflow
-- 🪟 **Pop-out Panels** - Detach view panels for better multitasking
-- 🚀 **Multithreaded** - High-performance concurrent processing
+- **Comprehensive Logging** - Logs all tools sending requests and receiving responses
+- **Selective Logging** - Ability to log from specific tools
+- **Custom Regex Support** - Show results of custom regular expressions in request/response
+- **Customizable Headers** - Personalize column headers to your preferences
+- **Advanced Filtering** - Create filters to display only requests matching specific strings or regex patterns
+- **Row Highlighting** - Make interesting requests pop with filter-based highlighting
+- **Built-in Grep** - Search through logs efficiently
+- **Live Monitoring** - Real-time requests and responses
+- **Multiple Views** - Various display options to suit your workflow
+- **Pop-out Panels** - Detach view panels for better multitasking
+- **Multithreaded** - High-performance concurrent processing
 
 ## 📸 Screenshots
 
 <details open>
-<summary><b>🎯 Log Filters</b></summary>
+<summary><b>Log Filters</b></summary>
 
 ![Log Filters](images/filters.png)
 
 </details>
 
 <details>
-<summary><b>🌈 Row Highlights</b></summary>
+<summary><b>Row Highlights</b></summary>
 
 ![Row Highlights](images/colorfilters.png)
 
 </details>
 
 <details>
-<summary><b>🔍 Grep Search</b></summary>
+<summary><b>Grep Search</b></summary>
 
 ![Grep Panel](images/grep.png)
 
@@ -79,25 +79,25 @@ You can use this extension without using the BApp store. Follow these steps to i
 
 ### Installation
 
-1. 📥 **Download** the [latest release jar](https://github.com/coreyd97/insikt/releases/latest)
+1. **Download** the [latest release jar](https://github.com/coreyd97/insikt/releases/latest)
 
-2. 🔧 **Install** in Burp Suite:
+2. **Install** in Burp Suite:
    - Click on the **"Extender"** tab
    - Navigate to the **"Extensions"** tab
    - Click **"Add"** and select the downloaded `insikt.jar` file
 
-3. ✅ **Verify** the installation:
+3. **Verify** the installation:
    - You should see the **"InsiKt"** tab in Burp Suite
    - If logging doesn't work, check your extension settings
    - If save buttons are disabled, ensure libraries loaded successfully
    - Try unloading and reloading the extension
    - [Report issues](https://github.com/coreyd97/insikt/issues) if problems persist
 
-4. ⚙️ **Configure** the extension:
+4. **Configure** the extension:
    - Use the **"Options"** tab for settings
    - Right-click on column headers for customization
 
-5. ⭐ **Show Support** - If you like the project, give the repo a star!
+5. **Show Support** - If you like the project, give the repo a star!
 
 <div align="center">
 
@@ -109,7 +109,7 @@ You can use this extension without using the BApp store. Follow these steps to i
 
 ## 🤝 Contributing
 
-### 🔨 Building from Source
+### Building from Source
 
 If you'd like to build the project from source, the project uses Gradle to simplify the process:
 
@@ -122,9 +122,9 @@ git clone https://github.com/coreyd97/InsiKt.git
 gradlew.bat jar         # Windows
 ```
 
-📦 Once complete, find the built JAR in the project's `releases` folder.
+Once complete, find the built JAR in the project's `releases` folder.
 
-### 🐛 Reporting Bugs
+### Reporting Bugs
 
 Found an issue? Please report it via [GitHub Issues](https://github.com/coreyd97/insikt/issues/new/choose).
 
