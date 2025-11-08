@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.0'
+    id "org.javacc.javacc" version "4.0.1"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+java {
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    implementation 'net.portswigger.burp.extensions:montoya-api:2025.10'
+    implementation 'org.swinglabs:swingx:1.6.1'
+    implementation 'com.github.CoreyD97:montoya-kotlin-utilities:latest'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1"
+    implementation 'co.elastic.clients:elasticsearch-java:8.8.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+    implementation 'com.google.guava:guava:33.4.8-jre'
+    implementation 'com.google.inject:guice:7.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:2.1.0"
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testRuntimeOnly files("${System.properties['user.home']}/BurpSuitePro/burpsuite_pro.jar")
+//    testRuntimeOnly files("${System.properties['user.home']}/BurpSuiteCommunity/burpsuite_community.jar")
+}
+
+// Ensure generated sources exist before compilation of main sources
+compileJava.dependsOn(compileJavacc)
+compileKotlin.dependsOn(compileJavacc)
+
+// Configure JJTree to run against the jjtree source set only
+compileJjtree {
+    // Take inputs from the jjtree source set
+    inputDirectory = file('src/main/java')
+    // Process the .jjt grammar and also copy over any supporting .java helper classes
+    include '**/*.jjt'
+//    include '**/*.java'
+}
+
+compileJavacc {
+    inputDirectory = file(compileJjtree.outputDirectory)
+}
+
+// Make generated Java sources visible to the main source set only
+sourceSets.main.java.srcDirs += [compileJavacc.outputDirectory, compileJjtree.outputDirectory]
+
+// Prevent the jjtree source set from being compiled on its own; it should only feed JJTree/JavaCC
+// Disable tasks that the Java plugin wires for that source set
+['compileJjtreeJava', 'jjtreeClasses', 'jjtreeJar', 'processJjtreeResources'].each { t ->
+    tasks.matching { it.name == t }.configureEach { enabled = false }
+}
+
+jar {
+    archiveBaseName = project.name
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        (configurations.runtimeClasspath).collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
+
+tasks.withType(Jar) {
+    destinationDirectory = file("$rootDir/releases")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
