@@ -7,7 +7,7 @@ import java.util.regex.Pattern
 
 
 const val APP_NAME: String = "InsiKt"
-const val VERSION: String = "0.0.1"
+const val VERSION: String = "1.0.0"
 
 //Preferences Keys
 const val PREF_LOG_TABLE_SETTINGS: String = "tabledetailsjson"
