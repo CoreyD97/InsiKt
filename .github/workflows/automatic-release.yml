@@ -35,10 +35,15 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew jar
 
+    - uses: actions/upload-artifact@v4
+      with:
+        name: InsiKt.jar
+        path: releases/*.jar
+
     - uses: SierraSoftworks/gh-releases@v1.0.7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         overwrite: 'true'
         files: |
-          releases/*
+          InsiKt.jar
           
