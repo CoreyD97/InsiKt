@@ -1,17 +1,13 @@
 <h1 align="center">InsiKt</h1>
 <h4 align="center">Kotlin Logger++ Fork</h4>
-<p align="center">
-  
-  <img src="https://img.shields.io/github/watchers/coreyd97/InsiKt?label=Watchers&style=for-the-badge" alt="GitHub Watchers">
-  <img src="https://img.shields.io/github/stars/coreyd97/InsiKt?style=for-the-badge" alt="GitHub Stars">
-  <img src="https://img.shields.io/github/downloads/coreyd97/InsiKt/total?style=for-the-badge" alt="GitHub All Releases">
-  <img src="https://img.shields.io/github/license/coreyd97/InsiKt?style=for-the-badge" alt="GitHub License">
+<p align="center">  
 </p>
 
-Developed by Corey
-Arthur  [![Twitter Follow](https://img.shields.io/badge/follow-%40CoreyD97-1DA1F2?logo=twitter&style=social)](https://twitter.com/coreyd97/)  
+Developed by Corey Arthur 
 
-Released under AGPL-3.0 see LICENSE for more information
+<a href='https://ko-fi.com/G2G6SWLU1' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+
 
 Description
 ----
