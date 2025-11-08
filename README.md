@@ -9,7 +9,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Burp Suite](https://img.shields.io/badge/Burp_Suite-FF6633?style=for-the-badge&logo=burp-suite&logoColor=white)](https://portswigger.net/burp)
 
-*Now with 99% less memory usage and ~~no~~ less bugs!* ✨
+*Now with 99% less memory usage and ~~no~~ fewer bugs!* ✨
 
 <a href='https://ko-fi.com/G2G6SWLU1' target='_blank'><img height='40' style='border:0px;height:40px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
