@@ -131,18 +131,21 @@ val DEFAULT_LOG_TABLE_COLUMNS_JSON = """
     """.trimIndent()
 
 val DEFAULT_LIBRARY_ENTRIES = """
-    [{"uuid":"1e763a2f-82f6-45e7-a2c8-9f9fa144ccac","name":"AttachmentDisposition","filterString":"Response.Headers MATCHES \".*Content-Disposition:\\s*attachment.*\"","shouldRetest":true},
-{"uuid":"5719b014-2a7f-4319-8605-c7fb6a7ab60e","name":"ContentTypeSniffing","filterString":"Response.MimeType == \"HTML\" AND Response.InferredType != \"HTML\" AND Response.Length > 0","shouldRetest":true},
-{"uuid":"b9c2bfd9-5ba7-454e-bc69-d935fde1d762","name":"NoSniff","filterString":"!(Response.Headers MATCHES \".*X-Content-Type-Options:\\\\s*nosniff.*\")","shouldRetest":true},
-{"uuid":"b9c9e48b-9c18-488f-a601-bc2df07253b9","name":"ContentTypeMismatch","filterString":"Response.InferredType IN [\"HTML\", \"SCRIPT\", \"JSON\", \"PLAIN_TEXT\"] AND (Response.InferredType != Response.MimeType) AND !(#NoSniff OR #AttachmentDisposition)","shouldRetest":true},
-{"uuid":"6ccfac17-5618-4dc2-8afa-b4548cb9b359","name":"PotentialCSRF","filterString":"Request.Method == \"POST\" AND !(Request.Parameters MATCHES \".*(csrf|xsrf|authenticity_token|__requestverificationtoken).*\") AND !(Request.Headers CONTAINS \"Authorization:\") AND !(Request.Headers MATCHES \".*(XSRF|CSRF).*\")","shouldRetest":true},
-{"uuid":"833363aa-1a14-4b30-8e76-a0deb39acdbf","name":"HasPathTraversalPayload","filterString":"(Request.Path MATCHES \".*(\\.|%(25)?2e){2}(/|%(25)?2f).*\" OR Request.Parameters MATCHES \".*(\\.|%(25){2}2e)+(/|%(25)?2f).*\")","shouldRetest":true},
-{"uuid":"79a36dc3-25c2-4449-aac5-548baee8b392","name":"DirListing","filterString":"Response.InferredType == \"HTML\" AND Response.Body MATCHES \".*(Index of\\s|Directory listing for|Parent Directory).*\"","shouldRetest":true},
-{"uuid":"287d43f6-bbd1-482b-bfdc-5590ed0ef64d","name":"ACAO","filterString":"Response.Headers MATCHES \".*Access-Control-Allow-Credentials:\\s*true.*\" AND Response.Headers MATCHES \".*Access-Control-Allow-Origin:\\s*\\*.*\"","shouldRetest":true},
-{"uuid":"a7166326-1f78-4b38-9763-d6b4c1404875","name":"ExternalRedirect","filterString":"Response.Status IN [301, 302, 307, 308] AND Response.Redirect MATCHES \"https?://.*\" AND !(Response.Redirect CONTAINS Request.Hostname)","shouldRetest":true},
-{"uuid":"64e23a0d-c082-4b96-987b-a45659d0ef2c","name":"HasUrlParam","filterString":"Request.Parameters MATCHES \".*=https?(%3A%2F%2F|://).+\" AND Response.Redirect == \"\"","shouldRetest":true},
-{"uuid":"a32f77eb-1630-40eb-802a-567bbdbfad58","name":"MissingCSP","filterString":"Response.InferredType == \"HTML\" AND !(Response.Headers MATCHES \".*Content-Security-Policy:.*\")","shouldRetest":true},
-{"uuid":"d27de0fe-2678-4218-9a72-44001d006c23","name":"CachedSensitive","filterString":"(Request.Path MATCHES \".*(login|account|user|profile|checkout|cart|settings).*\") AND (Response.Headers MATCHES \".*Cache-Control:\\\\s*(public|max-age=([0-9]{2,})).*\")","shouldRetest":true}]
+    [
+        {"uuid":"1e763a2f-82f6-45e7-a2c8-9f9fa144ccac","name":"AttachmentDisposition","filterString":"Response.Headers MATCHES \".*Content-Disposition:\\s*attachment.*\"","shouldRetest":true},
+        {"uuid":"5719b014-2a7f-4319-8605-c7fb6a7ab60e","name":"ContentTypeSniffing","filterString":"Response.MimeType == \"HTML\" AND Response.InferredType != \"HTML\" AND Response.Length > 0","shouldRetest":true},
+        {"uuid":"b9c2bfd9-5ba7-454e-bc69-d935fde1d762","name":"NoSniff","filterString":"!(Response.Headers MATCHES \".*X-Content-Type-Options:\\\\s*nosniff.*\")","shouldRetest":true},
+        {"uuid":"b9c9e48b-9c18-488f-a601-bc2df07253b9","name":"ContentTypeMismatch","filterString":"Response.InferredType IN [\"HTML\", \"SCRIPT\", \"JSON\", \"PLAIN_TEXT\"] AND (Response.InferredType != Response.MimeType) AND !(#NoSniff OR #AttachmentDisposition)","shouldRetest":true},
+        {"uuid":"6ccfac17-5618-4dc2-8afa-b4548cb9b359","name":"PotentialCSRF","filterString":"Request.Method == \"POST\" AND !(Request.Parameters MATCHES \".*(csrf|xsrf|authenticity_token|__requestverificationtoken).*\") AND !(Request.Headers CONTAINS \"Authorization:\") AND !(Request.Headers MATCHES \".*(XSRF|CSRF).*\")","shouldRetest":true},
+        {"uuid":"833363aa-1a14-4b30-8e76-a0deb39acdbf","name":"HasPathTraversalPayload","filterString":"(Request.Path MATCHES \".*(\\.|%(25)?2e){2}(/|%(25)?2f).*\" OR Request.Parameters MATCHES \".*(\\.|%(25){2}2e)+(/|%(25)?2f).*\")","shouldRetest":true},
+        {"uuid":"79a36dc3-25c2-4449-aac5-548baee8b392","name":"DirListing","filterString":"Response.InferredType == \"HTML\" AND Response.Body MATCHES \".*(Index of\\s|Directory listing for|Parent Directory).*\"","shouldRetest":true},
+        {"uuid":"287d43f6-bbd1-482b-bfdc-5590ed0ef64d","name":"ACAO","filterString":"Response.Headers MATCHES \".*Access-Control-Allow-Credentials:\\s*true.*\" AND Response.Headers MATCHES \".*Access-Control-Allow-Origin:\\s*\\*.*\"","shouldRetest":true},
+        {"uuid":"a7166326-1f78-4b38-9763-d6b4c1404875","name":"ExternalRedirect","filterString":"Response.Status IN [301, 302, 307, 308] AND Response.Redirect MATCHES \"https?://.*\" AND !(Response.Redirect CONTAINS Request.Hostname)","shouldRetest":true},
+        {"uuid":"64e23a0d-c082-4b96-987b-a45659d0ef2c","name":"HasUrlParam","filterString":"Request.Parameters MATCHES \".*=https?(%3A%2F%2F|://).+\" AND Response.Redirect == \"\"","shouldRetest":true},
+        {"uuid":"a32f77eb-1630-40eb-802a-567bbdbfad58","name":"MissingCSP","filterString":"Response.InferredType == \"HTML\" AND !(Response.Headers MATCHES \".*Content-Security-Policy:.*\")","shouldRetest":true},
+        {"uuid":"d27de0fe-2678-4218-9a72-44001d006c23","name":"CachedSensitive","filterString":"(Request.Path MATCHES \".*(login|account|user|profile|checkout|cart|settings).*\") AND (Response.Headers MATCHES \".*Cache-Control:\\\\s*(public|max-age=([0-9]{2,})).*\")","shouldRetest":true},
+        {"uuid":"d87832c2-7032-4ce2-9acc-525bc8121f80","name":"Navigate","filterString":"Request.Headers CONTAINS \"Sec-Fetch-Mode: navigate\"","shouldRetest":true}
+    ]
 """.trimIndent()
 
 enum class ElasticAuthType {
