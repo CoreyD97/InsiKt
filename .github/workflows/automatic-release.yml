@@ -34,9 +34,11 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew jar
-        
-    - name: upload binaries to release
-      uses: softprops/action-gh-release@v1
-      if: ${{startsWith(github.ref, 'refs/tags/') }}
+
+    - uses: SierraSoftworks/gh-releases@v1.0.7
       with:
-          files: releases/*.jar
+        token: ${{ secrets.GITHUB_TOKEN }}
+        overwrite: 'true'
+        files: |
+          releases/*
+          
