@@ -2,10 +2,10 @@
 <h4 align="center">Kotlin Logger++ Fork</h4>
 <p align="center">
   
-  <img src="https://img.shields.io/github/watchers/coreyd97/Insight?label=Watchers&style=for-the-badge" alt="GitHub Watchers">
-  <img src="https://img.shields.io/github/stars/coreyd97/Insight?style=for-the-badge" alt="GitHub Stars">
-  <img src="https://img.shields.io/github/downloads/coreyd97/Insight/total?style=for-the-badge" alt="GitHub All Releases">
-  <img src="https://img.shields.io/github/license/coreyd97/Insight?style=for-the-badge" alt="GitHub License">
+  <img src="https://img.shields.io/github/watchers/coreyd97/InsiKt?label=Watchers&style=for-the-badge" alt="GitHub Watchers">
+  <img src="https://img.shields.io/github/stars/coreyd97/InsiKt?style=for-the-badge" alt="GitHub Stars">
+  <img src="https://img.shields.io/github/downloads/coreyd97/InsiKt/total?style=for-the-badge" alt="GitHub All Releases">
+  <img src="https://img.shields.io/github/license/coreyd97/InsiKt?style=for-the-badge" alt="GitHub License">
 </p>
 
 Developed by Corey
