@@ -47,9 +47,7 @@ class LogView @Inject constructor(
     var colorDialog: ColorizingRuleDialog? = null
 
     private var stickToBottom by Preference(PREF_AUTO_SCROLL, true)
-    private var stickToTop by Preference(PREF_STICK_TO_TOP, false) { _, new ->
-        println("Stick To Top: ${new}")
-    }
+    private var stickToTop by Preference(PREF_STICK_TO_TOP, false)
 
     private val filterField = HistoryField(
         PREF_FILTER_HISTORY, 25,
