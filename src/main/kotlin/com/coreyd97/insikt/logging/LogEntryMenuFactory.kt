@@ -17,6 +17,7 @@ import com.coreyd97.insikt.logging.logentry.LogEntryField
 import com.coreyd97.insikt.view.logtable.LogTable
 import com.coreyd97.insikt.logview.repository.LogRepository
 import com.coreyd97.insikt.util.loggerDateFormat
+import com.coreyd97.insikt.view.logtable.LogView
 import com.google.inject.Singleton
 import java.awt.datatransfer.StringSelection
 import java.awt.event.ActionEvent
@@ -35,15 +36,17 @@ class LogEntryMenuFactory @Inject constructor(
     val montoya: MontoyaApi,
     val logRepository: LogRepository,
     val filterLibrary: FilterLibrary,
+    val tableFilterService: TableFilterService,
+    val logView: LogView,
     val colorService: TableColorService,
     val exporters: Set<LogExporter>
 ){
     fun singleEntryMenu(entry: LogEntry, selectedField: LogEntryField, logTable: LogTable): JPopupMenu{
-        return SingleLogEntryMenu(montoya, logRepository, filterLibrary, colorService, exporters, logTable, entry, selectedField)
+        return SingleLogEntryMenu(montoya, logRepository, filterLibrary, tableFilterService, colorService, logView, exporters, logTable, entry, selectedField)
     }
     
     fun multipleEntryMenu(selectedEntries: List<LogEntry>, logTable: LogTable): JPopupMenu{
-        return MultipleLogEntryMenu(montoya, logRepository, filterLibrary, colorService, exporters, logTable, selectedEntries)
+        return MultipleLogEntryMenu(montoya, logRepository, filterLibrary, tableFilterService, colorService, exporters, logTable, selectedEntries)
     }
 }
 
@@ -51,7 +54,9 @@ class SingleLogEntryMenu(
     val montoya: MontoyaApi,
     val logRepository: LogRepository,
     val libraryController: FilterLibrary,
+    val tableFilterService: TableFilterService,
     val colorService: TableColorService,
+    val logView: LogView,
     val exporters: Set<LogExporter>,
     val logTable: LogTable,
     entry: LogEntry,
@@ -82,7 +87,7 @@ class SingleLogEntryMenu(
             val useAsFilter =
                 JMenuItem(object : AbstractAction("Use $columnName Value As LogFilter") {
                     override fun actionPerformed(actionEvent: ActionEvent) {
-                        logTable.setFilter(
+                        tableFilterService.setFilter(
                             FilterRule.fromString(
                                 "$columnName==$columnValueString"
                             )
@@ -96,33 +101,39 @@ class SingleLogEntryMenu(
                 val addToCurrentFilter = JMenu("Add $columnName Value To LogFilter")
                 val andFilter = JMenuItem(object : AbstractAction(LogicalOperator.AND.label) {
                     override fun actionPerformed(actionEvent: ActionEvent) {
-                        currentFilter.withAddedCondition(
-                            LogicalOperator.AND,
-                            selectedField,
-                            ComparisonOperator.EQUAL,
-                            columnValueString
+                        tableFilterService.setFilter(
+                            currentFilter.withAddedCondition(
+                                LogicalOperator.AND,
+                                selectedField,
+                                ComparisonOperator.EQUAL,
+                                columnValueString
+                            )
                         )
                     }
                 })
 
                 val andNotFilter = JMenuItem(object : AbstractAction("AND NOT") {
                     override fun actionPerformed(actionEvent: ActionEvent) {
-                        currentFilter.withAddedCondition(
-                            LogicalOperator.AND,
-                            selectedField,
-                            ComparisonOperator.NOT_EQUAL,
-                            columnValueString
+                        tableFilterService.setFilter(
+                            currentFilter.withAddedCondition(
+                                LogicalOperator.AND,
+                                selectedField,
+                                ComparisonOperator.NOT_EQUAL,
+                                columnValueString
+                            )
                         )
                     }
                 })
 
                 val orFilter = JMenuItem(object : AbstractAction(LogicalOperator.OR.label) {
                     override fun actionPerformed(actionEvent: ActionEvent) {
-                        currentFilter.withAddedCondition(
-                            LogicalOperator.OR,
-                            selectedField,
-                            ComparisonOperator.EQUAL,
-                            columnValueString
+                        tableFilterService.setFilter(
+                            currentFilter.withAddedCondition(
+                                LogicalOperator.OR,
+                                selectedField,
+                                ComparisonOperator.EQUAL,
+                                columnValueString
+                            )
                         )
                     }
                 })
@@ -137,7 +148,7 @@ class SingleLogEntryMenu(
                     override fun actionPerformed(actionEvent: ActionEvent) {
                         val tableColorRule =
                             ColorizingRule.fromString("New Filter", "$columnName == $columnValueString")
-                        colorService.addColorFilter(tableColorRule)
+                        logView.displayColorDialogWithAdditions(listOf(tableColorRule))
                         //todo make dialog visible
                     }
                 })
@@ -279,6 +290,7 @@ class MultipleLogEntryMenu(
     val montoya: MontoyaApi,
     val logRepository: LogRepository,
     val libraryController: FilterLibrary,
+    val tableFilterService: TableFilterService,
     val colorService: TableColorService,
     val exporters: Set<LogExporter>,
     val logTable: LogTable,
