@@ -70,7 +70,7 @@ class LogProcessorImpl @Inject constructor(
     var enableForRecordedLogins: Boolean by Preference(PREF_LOG_RECORDED_LOGINS, true)
     val enableReflectionChecks by Preference(PREF_ENABLE_REFLECTIONS, true)
 
-    var restrictToScope: Boolean by Preference(PREF_RESTRICT_TO_SCOPE, true)
+    var restrictToScope: Boolean by Preference(PREF_RESTRICT_TO_SCOPE, false)
     val maxRespSizeBytes: Int by Preference(PREF_MAX_RESP_SIZE, 10)
 
     //todo drop this and use future status instead
