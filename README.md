@@ -1,12 +1,12 @@
 <h1 align="center">InsiKt</h1>
 <h4 align="center">Kotlin Logger++ Fork</h4>
-<p align="center">  
+<p align="center">
+   <i>Now with 99% less memory usage and <del>no</del> less bugs!</i>
 </p>
 
 Developed by Corey Arthur 
 
 <a href='https://ko-fi.com/G2G6SWLU1' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
 
 
 Description
