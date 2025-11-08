@@ -1,16 +1,25 @@
-<h1 align="center">InsiKt</h1>
-<h4 align="center">Kotlin Logger++ Fork</h4>
-<p align="center">
-   <i>Now with 99% less memory usage and <del>no</del> less bugs!</i>
-</p>
+<div align="center">
 
-Developed by Corey Arthur 
+# 🔍 InsiKt
 
-<a href='https://ko-fi.com/G2G6SWLU1' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+### *Kotlin Logger++ Fork*
 
+[![GitHub release](https://img.shields.io/github/v/release/coreyd97/insikt?style=for-the-badge&logo=github&color=blueviolet)](https://github.com/coreyd97/insikt/releases/latest)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue?style=for-the-badge&logo=open-source-initiative)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Burp Suite](https://img.shields.io/badge/Burp_Suite-FF6633?style=for-the-badge&logo=burp-suite&logoColor=white)](https://portswigger.net/burp)
 
-Description
-----
+*Now with 99% less memory usage and ~~no~~ less bugs!* ✨
+
+<a href='https://ko-fi.com/G2G6SWLU1' target='_blank'><img height='40' style='border:0px;height:40px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+**Developed by Corey Arthur**
+
+</div>
+
+---
+
+## 📖 Description
 
 InsiKt is a fork of Logger++ focused on the core features that I personally find useful during my tests. 
 
@@ -25,83 +34,107 @@ values of the capture groups.
 
 To enable logs to be used in other systems, the table can also be uploaded to elasticsearch.
 
-<b>Features:</b>
+## ✨ Features
 
-- Logs all the tools that are sending requests and receiving responses
-- Ability to log from a specific tool
-- Ability to show results of custom regular expressions in request/response
-- User can customise the column headers
-- Advanced Filters can be created to display only requests matching a specific string or regex pattern.
-- Row highlighting can be added using advanced filters to make interesting requests more visible.
-- Grep through logs.
-- Live requests and responses.
-- Multiple view options.
-- Pop out view panel.
-- Multithreaded.
+- 📊 **Comprehensive Logging** - Logs all tools sending requests and receiving responses
+- 🎯 **Selective Logging** - Ability to log from specific tools
+- 🔍 **Custom Regex Support** - Show results of custom regular expressions in request/response
+- ⚙️ **Customizable Headers** - Personalize column headers to your preferences
+- 🎨 **Advanced Filtering** - Create filters to display only requests matching specific strings or regex patterns
+- 🌈 **Row Highlighting** - Make interesting requests pop with filter-based highlighting
+- 🔎 **Built-in Grep** - Search through logs efficiently
+- ⚡ **Live Monitoring** - Real-time requests and responses
+- 👁️ **Multiple Views** - Various display options to suit your workflow
+- 🪟 **Pop-out Panels** - Detach view panels for better multitasking
+- 🚀 **Multithreaded** - High-performance concurrent processing
 
-<b>Current Limitations:</b>
+## 📸 Screenshots
 
-- Cannot log the requests' actual time unless originating from proxy tool.
-- Cannot calculate the actual delay between a request and its response unless originating from proxy tool.
-
-Screenshots
-----------------------
-
-<b>Log Filters</b>
+<details open>
+<summary><b>🎯 Log Filters</b></summary>
 
 ![Log Filters](images/filters.png)
 
-<b>Row Highlights</b>
+</details>
+
+<details>
+<summary><b>🌈 Row Highlights</b></summary>
 
 ![Row Highlights](images/colorfilters.png)
 
-<b>Grep Search</b>
+</details>
+
+<details>
+<summary><b>🔍 Grep Search</b></summary>
 
 ![Grep Panel](images/grep.png)
 
+</details>
 
-Usage
-----
-You can use this extension without using the BApp store. In order to install the latest version of this extension from
-the GitHub repository, follow these steps:
+---
 
-1. Download the [latest release jar](https://github.com/coreyd97/insikt/releases/latest) .
+## 🚀 Usage
 
-2. In Burp Suite, click on the "Extender" tab, then in the "Extensions" tab click on the "Add" button and select the
-   downloaded "insikt.jar" file.
+You can use this extension without using the BApp store. Follow these steps to install:
 
-3. You should now be able to see the "InsiKt" tab in Burp Suite. If it cannot log anything, check your Burp Suite
-   extension settings. If the save buttons are disabled, make sure that the requested libraries have been loaded
-   successfully; Unload and then reload the extension and try again. If you have found an issue, please report it in the
-   GitHub project.
+### Installation
 
-4. You can configure this extension by using its "option" tab and by right click on the columns' headers.
+1. 📥 **Download** the [latest release jar](https://github.com/coreyd97/insikt/releases/latest)
 
-5. If you like the project, give the repo a star! <3
+2. 🔧 **Install** in Burp Suite:
+   - Click on the **"Extender"** tab
+   - Navigate to the **"Extensions"** tab
+   - Click **"Add"** and select the downloaded `insikt.jar` file
+
+3. ✅ **Verify** the installation:
+   - You should see the **"InsiKt"** tab in Burp Suite
+   - If logging doesn't work, check your extension settings
+   - If save buttons are disabled, ensure libraries loaded successfully
+   - Try unloading and reloading the extension
+   - [Report issues](https://github.com/coreyd97/insikt/issues) if problems persist
+
+4. ⚙️ **Configure** the extension:
+   - Use the **"Options"** tab for settings
+   - Right-click on column headers for customization
+
+5. ⭐ **Show Support** - If you like the project, give the repo a star!
+
+<div align="center">
 
 ![Stargazers](https://starchart.cc/coreyd97/insikt.svg)
 
-Contributing
-----
+</div>
 
-### Building from Source
+---
+
+## 🤝 Contributing
+
+### 🔨 Building from Source
 
 If you'd like to build the project from source, the project uses Gradle to simplify the process:
 
-1. Clone the repository: `git clone https://github.com/nccgroup/LoggerPlusPlus.git`
-2. Within the project folder, execute `gradlew jar` (Linux) `gradlew.bat jar` (Windows)
-3. Once complete, you can find the built Jar in the project's `releases` folder.
+```bash
+# Clone the repository
+git clone https://github.com/coreyd97/InsiKt.git
 
-### Testing
+# Build the project
+./gradlew jar           # Linux/Mac
+gradlew.bat jar         # Windows
+```
 
-IntelliJ Idea has been used to develop the project, but feel free to use any IDE you prefer. The following instructions
-are for Idea, but the process will be similar for other IDEs.
+📦 Once complete, find the built JAR in the project's `releases` folder.
 
-1. Within Idea, click `File > Open`, then select the project's `build.gradle` file.
-2. Click "Open as Project" in the next dialog.
-3. To run/debug the application, navigate to `Run > Edit Configurations`, then add a new "Application" configuration
-   targeting the `TestLogger` class.
+### 🐛 Reporting Bugs
 
-### Reporting bugs
+Found an issue? Please report it via [GitHub Issues](https://github.com/coreyd97/insikt/issues/new/choose).
 
-If you have found an issue, please report it via [GitHub](https://github.com/nccgroup/LoggerPlusPlus/issues/new/choose).
+---
+
+<div align="center">
+
+**Made with ❤️ by Corey Arthur (@coreyarthur.com)**
+
+[![GitHub followers](https://img.shields.io/github/followers/coreyd97?style=social)](https://github.com/coreyd97)
+[![GitHub stars](https://img.shields.io/github/stars/coreyd97/insikt?style=social)](https://github.com/coreyd97/insikt/stargazers)
+
+</div>
