@@ -1,7 +1,9 @@
 package com.coreyd97.insikt
 
+import burp.api.montoya.MontoyaApi
 import com.coreyd97.insikt.util.PREF_LOG_LEVEL
 import com.coreyd97.montoyautilities.Preference
+import com.google.inject.Inject
 import com.google.inject.Singleton
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -26,7 +28,9 @@ class LevelSerializer : KSerializer<Level> {
 }
 
 @Singleton
-class LoggingController {
+class LoggingController @Inject constructor(
+    val montoyaApi: MontoyaApi
+) {
     private val levelDelegate = Preference(PREF_LOG_LEVEL, Level.INFO, serializer = LevelSerializer())
     private var _logLevel by levelDelegate
 
@@ -34,14 +38,14 @@ class LoggingController {
 //        levelDelegate.addListener { _, new ->
 //            setLogLevel(new)
 //        }
-//        if (Insikt.montoya.extension().filename() == null) { //Loaded from classpath. Log to console!
+        if (montoyaApi.extension().filename() == null) { //Loaded from classpath. Log to console!
             val context = LogManager.getContext(false) as LoggerContext
             val appenderBuilder = ConsoleAppender.Builder()
             appenderBuilder.name = "ConsoleAppender"
             val consoleAppender = appenderBuilder.build()
             consoleAppender.start()
             context.rootLogger.addAppender(consoleAppender)
-//        }
+        }
         setLogLevel(_logLevel)
     }
 

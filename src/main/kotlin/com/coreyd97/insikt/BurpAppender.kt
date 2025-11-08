@@ -20,15 +20,6 @@ class BurpAppender(name: String, filter: Filter?) :
     override fun append(event: LogEvent) {
         val message = String(this.layout.toByteArray(event))
 
-        if(montoyaApi == null || montoyaApi.extension().filename().contains("InsiKt.jar")){
-            if(event.level.isMoreSpecificThan(Level.ERROR)) {
-                System.err.println("${event.level} $message")
-            }else{
-                println("${event.level} $message")
-            }
-            if(montoyaApi == null) return
-        }
-
         if (event.level.isMoreSpecificThan(Level.INFO)) {
             montoyaApi.logging().logToError(message)
         } else {
