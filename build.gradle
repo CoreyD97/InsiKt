@@ -23,7 +23,7 @@ kotlin {
 dependencies {
     implementation 'net.portswigger.burp.extensions:montoya-api:2025.10'
     implementation 'org.swinglabs:swingx:1.6.1'
-    implementation 'com.github.CoreyD97:montoya-kotlin-utilities:latest'
+    implementation 'com.github.CoreyD97:montoya-kotlin-utilities:ff230de24f'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1"
     implementation 'co.elastic.clients:elasticsearch-java:8.8.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.3'

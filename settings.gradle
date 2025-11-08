@@ -4,10 +4,10 @@ pluginManagement {
     }
 }
 
-includeBuild("../MontoyaKotlinUtilities"){
-    dependencySubstitution {
-        substitute(module("com.github.CoreyD97:montoya-kotlin-utilities")).using(project(":"))
-    }
-}
+//includeBuild("../MontoyaKotlinUtilities"){
+//    dependencySubstitution {
+//        substitute(module("com.github.CoreyD97:montoya-kotlin-utilities")).using(project(":"))
+//    }
+//}
 
 rootProject.name = 'InsiKt'
