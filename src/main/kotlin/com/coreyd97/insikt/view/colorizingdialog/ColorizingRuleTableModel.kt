@@ -100,7 +100,7 @@ class ColorizingRuleTableModel internal constructor(val original: List<Colorizin
     }
 
     fun addBlankRule(){
-        val rule = ColorizingRule.fromString("", "")
+        val rule = ColorizingRule.fromString("", "Request.hostname == \"example.com\"")
         rule.shouldRetest = true
         rule.enabled = true
         add(rule)
