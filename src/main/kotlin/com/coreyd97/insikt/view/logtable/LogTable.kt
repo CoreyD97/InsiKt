@@ -62,11 +62,8 @@ class LogTable(
             it.maxSortKeys = 1
             it.sortsOnUpdates = true
 
-            try {
+            runCatching {
                 it.sortKeys = mutableListOf(RowSorter.SortKey(sortColumn, sortOrder))
-            } catch (ignored: IllegalArgumentException) {
-                /**Just ignore it**/
-                ignored.printStackTrace()
             }
 
             it.addRowSorterListener { rowSorterEvent: RowSorterEvent ->
