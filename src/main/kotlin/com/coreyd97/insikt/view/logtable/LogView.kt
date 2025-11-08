@@ -30,8 +30,19 @@ import javax.swing.event.TableModelEvent
 import javax.swing.event.TableModelListener
 
 
+interface LogView {
+    val requestViewer: RequestViewer
+    fun displayColorDialog()
+    fun displayColorDialogWithAdditions(additions: List<ColorizingRule> = emptyList())
+    fun displayTagDialog()
+    fun displayTagDialogWithAdditions(additions: List<ColorizingRule> = emptyList())
+    fun setPanelLayout(view: VariableViewPanel.View)
+    fun setEntryViewerLayout(view: VariableViewPanel.View)
+    fun unload()
+}
+
 @Singleton
-class LogView @Inject constructor(
+class LogViewImpl @Inject constructor(
     val montoya: MontoyaApi,
     val logRepository: LogRepository,
     val logTable: LogTable,
@@ -39,9 +50,9 @@ class LogView @Inject constructor(
     val filterService: TableFilterService,
     val colorService: TableColorService,
     val tagService: TagService,
-    @param:Named("LogViewSelected") val requestViewer: RequestViewer,
+    @param:Named("LogViewSelected") override val requestViewer: RequestViewer,
     val colorizingRuleDialogFactory: ColorizingRuleDialogFactory
-): JPanel(BorderLayout()), TableFilterListener {
+) : JPanel(BorderLayout()), LogView, TableFilterListener {
 
     var tagDialog: ColorizingRuleDialog? = null
     var colorDialog: ColorizingRuleDialog? = null
@@ -161,11 +172,11 @@ class LogView @Inject constructor(
         //Do nothing. TODO See onFilterPaused
     }
 
-    fun displayColorDialog() {
+    override fun displayColorDialog() {
         displayColorDialogWithAdditions()
     }
 
-    fun displayColorDialogWithAdditions(additions: List<ColorizingRule> = emptyList()) {
+    override fun displayColorDialogWithAdditions(additions: List<ColorizingRule>) {
         if(colorDialog != null && colorDialog!!.isVisible) {
             colorDialog!!.requestFocusInWindow()
             return
@@ -183,11 +194,11 @@ class LogView @Inject constructor(
         colorDialog!!.isVisible = true
     }
 
-    fun displayTagDialog() {
+    override fun displayTagDialog() {
         displayTagDialogWithAdditions()
     }
 
-    fun displayTagDialogWithAdditions(additions: List<ColorizingRule> = emptyList()) {
+    override fun displayTagDialogWithAdditions(additions: List<ColorizingRule>) {
         if(tagDialog != null && tagDialog!!.isVisible) {
             tagDialog!!.requestFocusInWindow()
             return
@@ -219,16 +230,16 @@ class LogView @Inject constructor(
         }
     }
 
-    fun setPanelLayout(view: VariableViewPanel.View) {
+    override fun setPanelLayout(view: VariableViewPanel.View) {
         tableAndViewerSplit.view = view
     }
 
     //TODO Remove this and inject RequestViewer in dependents
-    fun setEntryViewerLayout(view: VariableViewPanel.View) {
+    override fun setEntryViewerLayout(view: VariableViewPanel.View) {
         requestViewer.variableViewPanel.view = view
     }
 
-    fun unload(){
+    override fun unload(){
         if(requestViewer.isPoppedOut){
             requestViewer.popoutFrame.dispose()
         }

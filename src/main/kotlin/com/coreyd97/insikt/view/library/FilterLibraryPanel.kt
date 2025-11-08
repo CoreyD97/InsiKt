@@ -1,6 +1,5 @@
 package com.coreyd97.insikt.view.library
 
-import ButtonCell
 import MenuButtonCell
 import com.coreyd97.insikt.filter.*
 import com.coreyd97.insikt.view.InsiktPanel

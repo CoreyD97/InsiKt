@@ -10,7 +10,6 @@ import com.coreyd97.insikt.filter.FilterRule
 import com.coreyd97.insikt.filter.LogicalOperator
 import com.coreyd97.insikt.filter.TableFilterService
 import com.coreyd97.insikt.logging.logentry.LogEntryField
-import com.coreyd97.insikt.view.logtable.LogTable
 import com.coreyd97.insikt.view.logtable.LogView
 import com.coreyd97.insikt.util.APP_NAME
 import com.coreyd97.insikt.util.PREF_COLOR_FILTERS
@@ -20,7 +19,6 @@ import com.google.inject.Singleton
 import org.apache.commons.text.StringEscapeUtils
 import java.awt.Component
 import java.awt.event.ActionEvent
-import java.util.*
 import javax.swing.AbstractAction
 import javax.swing.JMenu
 import javax.swing.JMenuItem

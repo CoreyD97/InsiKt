@@ -1,6 +1,5 @@
 package com.coreyd97.insikt.view
 
-import com.coreyd97.insikt.filter.ColorizingService
 import com.coreyd97.insikt.util.APP_NAME
 import com.coreyd97.insikt.util.PREF_LAYOUT
 import com.coreyd97.insikt.util.PREF_LOG_LEVEL
@@ -15,7 +14,6 @@ import javax.swing.AbstractAction
 import javax.swing.AbstractButton
 import javax.swing.ButtonGroup
 import javax.swing.JMenu
-import javax.swing.JMenuItem
 import javax.swing.JRadioButtonMenuItem
 
 /**

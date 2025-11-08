@@ -32,6 +32,8 @@ import com.coreyd97.insikt.util.PausableThreadPoolExecutor
 import com.coreyd97.insikt.view.LoggerMenu
 import com.coreyd97.insikt.view.InsiktPanel
 import com.coreyd97.insikt.view.InsiktPanelImpl
+import com.coreyd97.insikt.view.logtable.LogView
+import com.coreyd97.insikt.view.logtable.LogViewImpl
 import com.coreyd97.insikt.view.shared.RequestViewer
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
@@ -64,6 +66,7 @@ class InsiktModule(val montoya: MontoyaApi) : AbstractModule() {
         bind(LogRepository::class.java).to(InMemoryLogRepository::class.java).`in`(Scopes.SINGLETON)
         bind(LogProcessor::class.java).to(LogProcessorImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ParserService::class.java).to(ParserServiceImpl::class.java)
+        bind(LogView::class.java).to(LogViewImpl::class.java)
         bind(LoggingController::class.java)
         bind(LogExportService::class.java).to(LogExportServiceImpl::class.java)
         val exportBinder = Multibinder.newSetBinder(binder(), LogExporter::class.java)

@@ -8,13 +8,10 @@ import com.coreyd97.insikt.view.logtable.LogTable
 import com.coreyd97.insikt.view.logtable.LogView
 import com.coreyd97.insikt.util.APP_NAME
 import com.coreyd97.insikt.util.PREF_ENABLED
-import com.coreyd97.insikt.view.shared.RequestViewer
 import com.coreyd97.montoyautilities.PopOutPanel
 import com.coreyd97.montoyautilities.Preference
-import com.coreyd97.montoyautilities.PreferenceProxy
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import com.google.inject.name.Named
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JPanel
@@ -45,7 +42,7 @@ class InsiktPanelImpl @Inject constructor(
     }
 
     init {
-        tabbedPanel.addTab("View Logs", null, logView, null)
+        tabbedPanel.addTab("View Logs", null, logView as Component, null)
         tabbedPanel.addTab(
             "Filter Library",
             null,
