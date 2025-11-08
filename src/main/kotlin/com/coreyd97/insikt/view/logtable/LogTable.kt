@@ -222,21 +222,6 @@ class LogTable(
         }
     }
 
-
-    fun setFilter(filter: FilterRule?) {
-        this.firePropertyChange("filter", currentFilter, filter)
-        this.currentFilter = filter
-        if (filter == null || !filter.isValid) {
-            sorter.setRowFilter(null)
-        } else {
-            sorter.rowFilter = createRowFilter(filter)
-        }
-
-        if (selectedRow != -1) {
-            scrollRectToVisible(getCellRect(selectedRow, 0, true))
-        }
-    }
-
     override fun onFilterApplied(filter: FilterRule) {
         sorter.rowFilter = createRowFilter(filter)
 
