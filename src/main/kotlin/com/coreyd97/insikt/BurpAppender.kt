@@ -20,10 +20,12 @@ class BurpAppender(name: String, filter: Filter?) :
     override fun append(event: LogEvent) {
         val message = String(this.layout.toByteArray(event))
 
-        if (event.level.isMoreSpecificThan(Level.INFO)) {
-            montoyaApi.logging().logToError(message)
-        } else {
-            montoyaApi.logging().logToOutput(message)
+        runCatching {
+            if (event.level.isMoreSpecificThan(Level.WARN)) {
+                montoyaApi.logging().logToError(message)
+            } else {
+                montoyaApi.logging().logToOutput(message)
+            }
         }
     }
 

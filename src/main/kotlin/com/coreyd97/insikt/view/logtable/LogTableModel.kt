@@ -92,7 +92,9 @@ class LogTableModel @Inject constructor(
         if (drained.any { it is RepoEvent.Reset } || drained.size > 1000) {
             snapshot = repository.snapshot().toMutableList()
             if(activeFilter == null) entriesMatchingFilter.clear()
-            else buildFilterList(activeFilter) {}.execute()
+            else {
+                buildFilterList(activeFilter) {}.execute()
+            }
             fireTableDataChanged()
             return
         }
@@ -236,8 +238,6 @@ class LogTableModel @Inject constructor(
             { _, e ->
                 runCatching {
                     entriesMatchingFilter.add(e)
-                }.onFailure { e ->
-                    e.printStackTrace()
                 }
             },
             onComplete
@@ -318,7 +318,10 @@ class LogTableModel @Inject constructor(
 
         override fun doInBackground() {
             val n = repository.size()
-            if (n <= 0) return
+            if (n <= 0) {
+                onComplete.invoke()
+                return
+            }
 
             val threads = Runtime.getRuntime().availableProcessors()
             val chunkSize = 512
@@ -354,15 +357,20 @@ class LogTableModel @Inject constructor(
                 }
 
                 for (f in futures) if (!isCancelled) f.get()
+            }catch (e: Exception) {
+                e.printStackTrace()
             } finally {
                 executor.shutdownNow()
             }
-            onComplete.invoke()
         }
 
         override fun process(rows: List<Pair<Int, LogEntry>>) {
             // Batch delivered on the EDT; invoke onMatch for each
             for (row in rows) onMatch(row.first, row.second)
+        }
+
+        override fun done() {
+            onComplete.invoke()
         }
     }
 }

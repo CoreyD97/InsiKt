@@ -31,14 +31,16 @@ class LevelSerializer : KSerializer<Level> {
 class LoggingController @Inject constructor(
     val montoyaApi: MontoyaApi
 ) {
-    private val levelDelegate = Preference(PREF_LOG_LEVEL, Level.INFO, serializer = LevelSerializer())
+    private val levelDelegate = Preference(PREF_LOG_LEVEL, Level.INFO, serializer = LevelSerializer()) { _, new ->
+        setLogLevel(new)
+    }
     private var _logLevel by levelDelegate
 
     init {
 //        levelDelegate.addListener { _, new ->
 //            setLogLevel(new)
 //        }
-        if (montoyaApi.extension().filename() == null) { //Loaded from classpath. Log to console!
+        if (montoyaApi.extension().filename().contains("InsiKt.jar")) { //Loaded from classpath. Log to console!
             val context = LogManager.getContext(false) as LoggerContext
             val appenderBuilder = ConsoleAppender.Builder()
             appenderBuilder.name = "ConsoleAppender"
@@ -49,10 +51,10 @@ class LoggingController @Inject constructor(
         setLogLevel(_logLevel)
     }
 
-    fun setLogLevel(logLevel: Level) {
-        this._logLevel = logLevel
+    private fun setLogLevel(logLevel: Level) {
         val context = LogManager.getContext(false) as LoggerContext
-        context.configuration.rootLogger.level = logLevel
+        val config = context.configuration
+        config.rootLogger.level = logLevel
         context.updateLoggers()
     }
 }

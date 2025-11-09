@@ -244,6 +244,7 @@ class LogTable(
 
     override fun onFilterCleared(previousFilter: FilterRule?) {
         sorter.rowFilter = null
+        dataModel.entriesMatchingFilter.clear()
 
         if (selectedRow != -1) {
             scrollRectToVisible(getCellRect(selectedRow, 0, true))

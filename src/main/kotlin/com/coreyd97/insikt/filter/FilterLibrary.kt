@@ -49,7 +49,7 @@ class FilterLibraryImpl @Inject constructor(
         if (!rule.isValid) {
             return false
         }
-        return test(rule.expression!!, logEntry)
+        return test(rule.expression, logEntry)
     }
 
     override fun addToLibrary(filter: FilterRule) {

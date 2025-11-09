@@ -87,7 +87,8 @@ class LoggerMenu @Inject constructor(
         this.add(viewMenu)
 
         val logLevelGroup = ButtonGroup()
-        var logLevel by Preference(PREF_LOG_LEVEL, Level.INFO)
+        // Use the same serializer as LoggingController so persisted value is consistent
+        var logLevel by Preference(PREF_LOG_LEVEL, Level.INFO, serializer = com.coreyd97.insikt.LevelSerializer())
         val debug: AbstractButton = JRadioButtonMenuItem(
             Level.DEBUG.toString(),
             logLevel.compareTo(Level.DEBUG) == 0
