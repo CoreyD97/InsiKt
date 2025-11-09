@@ -226,11 +226,11 @@ class LogTable(
     }
 
     private fun asyncRowFilter(filter: FilterRule) {
-        val current = Instant.now()
-        logger.info("Starting async row filter: ${current.toEpochMilli()}")
+//        val current = Instant.now()
+//        logger.info("Starting async row filter: ${current.toEpochMilli()}")
         dataModel.buildFilterList(filter, {
-            val finish = Instant.now()
-            logger.info("Finished async row filter: ${finish.toEpochMilli()}. Delta: ${finish.minusMillis(current.toEpochMilli()).toEpochMilli()}")
+//            val finish = Instant.now()
+//            logger.info("Finished async row filter: ${finish.toEpochMilli()}. Delta: ${finish.minusMillis(current.toEpochMilli()).toEpochMilli()}")
             sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
                 override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
                     val logEntry = entry.model.getRow(entry.identifier)
