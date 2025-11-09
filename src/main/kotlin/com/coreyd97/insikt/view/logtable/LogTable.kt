@@ -216,11 +216,6 @@ class LogTable(
     }
 
     private fun asyncRowFilter(filter: FilterRule) {
-        sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
-            override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
-                return false
-            }
-        }
         isFiltering = true
         dataModel.buildFilterList(filter, {
             sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
