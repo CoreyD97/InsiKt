@@ -1,6 +1,7 @@
 package com.coreyd97.insikt.view.logtable
 
 import burp.api.montoya.MontoyaApi
+import co.elastic.clients.util.DateTime
 import com.coreyd97.insikt.filter.FilterLibrary
 import com.coreyd97.insikt.filter.FilterRule
 import com.coreyd97.insikt.filter.TableFilterListener
@@ -17,6 +18,7 @@ import com.google.inject.name.Named
 import org.apache.logging.log4j.LogManager
 import java.awt.Component
 import java.awt.event.MouseEvent
+import java.time.Instant
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import javax.swing.*
@@ -25,6 +27,7 @@ import javax.swing.event.RowSorterEvent
 import javax.swing.event.TableModelEvent
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableRowSorter
+import kotlin.concurrent.thread
 
 class LogTable(
     val montoya: MontoyaApi,
@@ -222,8 +225,26 @@ class LogTable(
         }
     }
 
+    private fun asyncRowFilter(filter: FilterRule) {
+        val current = Instant.now()
+        logger.info("Starting async row filter: ${current.toEpochMilli()}")
+        dataModel.buildFilterList(filter, {
+            val finish = Instant.now()
+            logger.info("Finished async row filter: ${finish.toEpochMilli()}. Delta: ${finish.minusMillis(current.toEpochMilli()).toEpochMilli()}")
+            sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
+                override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
+                    val logEntry = entry.model.getRow(entry.identifier)
+                    return dataModel.entriesMatchingFilter.contains(logEntry)
+                }
+            }
+        }).execute()
+    }
+
     override fun onFilterApplied(filter: FilterRule) {
-        sorter.rowFilter = createRowFilter(filter)
+//        sorter.rowFilter = createRowFilter(filter)
+        asyncRowFilter(filter)
+
+
 
         if (selectedRow != -1) {
             scrollRectToVisible(getCellRect(selectedRow, 0, true))

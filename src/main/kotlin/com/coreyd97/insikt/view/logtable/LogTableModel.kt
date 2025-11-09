@@ -4,7 +4,10 @@ import burp.api.montoya.MontoyaApi
 import com.coreyd97.insikt.filter.ColorizingRuleListener
 import com.coreyd97.insikt.filter.ColorizingRule
 import com.coreyd97.insikt.filter.FilterLibrary
+import com.coreyd97.insikt.filter.FilterRule
 import com.coreyd97.insikt.filter.TableColorService
+import com.coreyd97.insikt.filter.TableFilterListener
+import com.coreyd97.insikt.filter.TableFilterService
 import com.coreyd97.insikt.filter.TagService
 import com.coreyd97.insikt.logging.logentry.LogEntry
 import com.coreyd97.insikt.logging.logentry.LogEntryField
@@ -16,6 +19,7 @@ import org.apache.logging.log4j.LogManager
 import java.util.*
 import java.util.concurrent.Future
 import javax.swing.SwingUtilities
+import javax.swing.SwingWorker
 
 @Singleton
 class LogTableModel @Inject constructor(
@@ -23,6 +27,7 @@ class LogTableModel @Inject constructor(
     val repository: LogRepository,
     private val columnModel: LogTableColumnModel,
     val filterLibrary: FilterLibrary,
+    val tableFilterService: TableFilterService,
     val tagService: TagService,
     val colorService: TableColorService,
 ) : javax.swing.table.AbstractTableModel(), LogRepository.Listener {
@@ -31,6 +36,7 @@ class LogTableModel @Inject constructor(
 
     // Make snapshot mutable so we can apply deltas incrementally.
     var snapshot: MutableList<LogEntry> = ArrayList(repository.snapshot())
+    val entriesMatchingFilter = mutableSetOf<LogEntry>()
     val tagListener: TagListener
     val colorFilterListener: ColorFilterListener
 
@@ -86,6 +92,7 @@ class LogTableModel @Inject constructor(
             fireTableDataChanged()
             return
         }
+        val activeFilter = tableFilterService.activeFilter()
 
         // Apply events incrementally in the order they occurred to preserve index semantics.
         for (e in drained) {
@@ -96,6 +103,10 @@ class LogTableModel @Inject constructor(
                     if (entry != null) {
                         val insertAt = idx.coerceIn(0, snapshot.size) // guard against late indices
                         snapshot.add(insertAt, entry)
+                        if(activeFilter != null){
+                            val matches = filterLibrary.test(activeFilter, entry)
+                            if(matches) entriesMatchingFilter.add(entry)
+                        }
                         fireTableRowsInserted(insertAt, insertAt)
                     } else {
                         // Repository no longer has the item at idx; skip safely.
@@ -120,7 +131,8 @@ class LogTableModel @Inject constructor(
                 is RepoEvent.Removed -> {
                     val idx = e.index
                     if (idx in 0 until snapshot.size) {
-                        snapshot.removeAt(idx)
+                        val removed = snapshot.removeAt(idx)
+                        entriesMatchingFilter.remove(removed)
                         fireTableRowsDeleted(idx, idx)
                     } else {
                         // Index already shifted/processed; safely ignore.
@@ -210,18 +222,33 @@ class LogTableModel @Inject constructor(
         fireTableDataChanged()
     }
 
+    fun buildFilterList(filter: FilterRule, onComplete: () -> Unit): SwingWorker<Unit, Pair<Int, LogEntry>> {
+        entriesMatchingFilter.clear()
+        return RuleTestingWorker(
+            { e -> filterLibrary.test(filter, e)},
+            { _, e ->
+                runCatching {
+                    entriesMatchingFilter.add(e)
+                }.onFailure { e ->
+                    e.printStackTrace()
+                }
+            },
+            onComplete
+        )
+    }
+
     inner class ColorFilterListener : ColorizingRuleListener {
         override fun onExpressionChange(rule: ColorizingRule) {
             RuleTestingWorker(
                 {e -> colorService.testAndUpdateEntry(rule, e, true) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
         override fun onAttributeChange(rule: ColorizingRule) {
             RuleTestingWorker(
                 {e -> e.matchingColorFilters.contains(rule) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
@@ -231,7 +258,7 @@ class LogTableModel @Inject constructor(
             }
             RuleTestingWorker(
                 {e -> colorService.testAndUpdateEntry(rule, e, false) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
@@ -241,7 +268,7 @@ class LogTableModel @Inject constructor(
             }
             RuleTestingWorker(
                 {e -> e.matchingColorFilters.remove(rule) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
     }
@@ -250,36 +277,37 @@ class LogTableModel @Inject constructor(
         override fun onExpressionChange(rule: ColorizingRule) {
             RuleTestingWorker(
                 {e -> tagService.testAndUpdateEntry(rule, e, true) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
         override fun onAttributeChange(rule: ColorizingRule) {
             RuleTestingWorker(
                 {e -> e.matchingTags.contains(rule) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
         override fun onAdd(rule: ColorizingRule) {
             RuleTestingWorker(
                 {e -> tagService.testAndUpdateEntry(rule, e, false) },
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
 
         override fun onRemove(rule: ColorizingRule) {
             RuleTestingWorker(
                 {entry -> entry.matchingTags.contains(rule)}, 
-                {i -> enqueue(RepoEvent.Updated(i))}
+                {i, _ -> enqueue(RepoEvent.Updated(i))}
             ).execute()
         }
     }
 
     inner class RuleTestingWorker(
         val test: (LogEntry) -> Boolean,
-        val onMatch: (Int) -> Unit
-    ) : javax.swing.SwingWorker<Unit, Int>() {
+        val onMatch: (Int, LogEntry) -> Unit,
+        val onComplete: () -> Unit = {}
+    ) : javax.swing.SwingWorker<Unit, Pair<Int, LogEntry>>() {
 
         override fun doInBackground() {
             val n = repository.size()
@@ -300,13 +328,13 @@ class LogTableModel @Inject constructor(
                     val startIdx = start
                     val endIdx = end
                     futures += executor.submit {
-                        val localMatches = ArrayList<Int>(minOf(chunkSize, startIdx - endIdx + 1))
+                        val localMatches = ArrayList<Pair<Int, LogEntry>>(minOf(chunkSize, startIdx - endIdx + 1))
                         var i = startIdx
                         while (i >= endIdx && !isCancelled) {
                             val entry = repository.getByIndex(i)
                             if (entry != null) {
                                 try {
-                                    if (test(entry)) localMatches.add(i)
+                                    if (test(entry)) localMatches.add(Pair(i, entry))
                                 } catch (t: Throwable) {
                                     logger.error(t.message, t)
                                 }
@@ -322,11 +350,12 @@ class LogTableModel @Inject constructor(
             } finally {
                 executor.shutdownNow()
             }
+            onComplete.invoke()
         }
 
-        override fun process(rows: List<Int>) {
+        override fun process(rows: List<Pair<Int, LogEntry>>) {
             // Batch delivered on the EDT; invoke onMatch for each
-            for (row in rows) onMatch(row)
+            for (row in rows) onMatch(row.first, row.second)
         }
     }
 }
