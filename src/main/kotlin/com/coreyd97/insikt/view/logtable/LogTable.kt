@@ -215,9 +215,13 @@ class LogTable(
         }
     }
 
+    var filteringWorker: SwingWorker<Unit, Pair<Int, LogEntry>>? = null
     private fun asyncRowFilter(filter: FilterRule) {
+        if(filteringWorker != null) {
+            filteringWorker!!.cancel(true)
+        }
         isFiltering = true
-        dataModel.buildFilterList(filter, {
+        filteringWorker = dataModel.buildFilterList(filter, {
             sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
                 override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
                     val logEntry = entry.model.getRow(entry.identifier)
@@ -225,7 +229,9 @@ class LogTable(
                 }
             }
             isFiltering = false
-        }).execute()
+            filteringWorker = null
+        })
+        filteringWorker!!.execute()
     }
 
     override fun onFilterApplied(filter: FilterRule) {
