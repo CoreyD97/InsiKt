@@ -64,6 +64,7 @@ class LogTableModel @Inject constructor(
         tagService.removeListener(tagListener)
         colorService.removeListener(tagListener)
         snapshot.clear()
+        entriesMatchingFilter.clear()
         fireTableDataChanged()
     }
 
@@ -85,14 +86,16 @@ class LogTableModel @Inject constructor(
             flushScheduled = false
         }
         if (drained.isEmpty()) return
+        val activeFilter = tableFilterService.activeFilter()
 
         // If there is a reset, rebuild snapshot once and issue a full refresh.
         if (drained.any { it is RepoEvent.Reset } || drained.size > 1000) {
             snapshot = repository.snapshot().toMutableList()
+            if(activeFilter == null) entriesMatchingFilter.clear()
+            else buildFilterList(activeFilter) {}.execute()
             fireTableDataChanged()
             return
         }
-        val activeFilter = tableFilterService.activeFilter()
 
         // Apply events incrementally in the order they occurred to preserve index semantics.
         for (e in drained) {
@@ -119,6 +122,10 @@ class LogTableModel @Inject constructor(
                         val entry = repository.getByIndex(idx)
                         if (entry != null) {
                             snapshot[idx] = entry
+                            if(activeFilter != null){
+                                val matches = filterLibrary.test(activeFilter, entry)
+                                if(matches) entriesMatchingFilter.add(entry)
+                            }
                             fireTableRowsUpdated(idx, idx)
                         } else {
                             // If entry missing, keep current row but still notify to repaint.

@@ -4,6 +4,7 @@ import burp.api.montoya.core.ToolType
 import burp.api.montoya.http.message.HttpRequestResponse
 import burp.api.montoya.proxy.ProxyHttpRequestResponse
 import com.coreyd97.insikt.ExecutorNames
+import com.coreyd97.insikt.filter.TableFilterService
 import com.coreyd97.insikt.logging.logentry.LogEntry
 import com.coreyd97.insikt.logging.logentry.LogEntryFactory
 import com.coreyd97.insikt.util.APP_NAME
@@ -21,13 +22,14 @@ class EntryImportWorkerFactory @Inject constructor(
     @param:Named("extension") val extensionFrame: Window,
     val logProcessor: LogProcessor,
     val logEntryFactory: LogEntryFactory,
+    val filterService: TableFilterService,
     @param:Named(ExecutorNames.ENTRY_IMPORT) val importExecutor: PausableThreadPoolExecutor,
     @param:Named(ExecutorNames.ENTRY_PROCESS) val entryProcessExecutor: PausableThreadPoolExecutor,
 
     ){
     fun workerForTool(origin: ToolType, entries: List<HttpRequestResponse>): EntryImportWorker {
         return EntryImportWorker(logProcessor, logEntryFactory,
-        entryProcessExecutor, importExecutor,
+        filterService, entryProcessExecutor, importExecutor,
             dialogOwner = extensionFrame,
             title = "${APP_NAME} - Import",
             message = "Importing ${entries.size} entries from ${origin.toolName()}",
@@ -36,7 +38,7 @@ class EntryImportWorkerFactory @Inject constructor(
 
     fun workerForProxyEntries(entries: List<ProxyHttpRequestResponse>, sendToAutoExporters: Boolean): EntryImportWorker {
         return EntryImportWorker(logProcessor, logEntryFactory,
-            entryProcessExecutor, importExecutor,
+            filterService, entryProcessExecutor, importExecutor,
             dialogOwner = extensionFrame,
             title = "${APP_NAME} - Import",
             message = "Importing ${entries.size} entries from Proxy",
@@ -48,6 +50,7 @@ class EntryImportWorkerFactory @Inject constructor(
 class EntryImportWorker internal constructor(
     val logProcessor: LogProcessor,
     val logEntryFactory: LogEntryFactory,
+    val tableFilterService: TableFilterService,
     val entryProcessExecutor: PausableThreadPoolExecutor,
     val entryImportExecutor: PausableThreadPoolExecutor,
     val httpEntries: List<HttpRequestResponse>? = null,
@@ -69,7 +72,7 @@ class EntryImportWorker internal constructor(
     @Throws(Exception::class)
     override fun doWork() {
         entryProcessExecutor.pause() //Pause the processor, we don't want it mixing with our import.
-
+        tableFilterService.pauseFilter()
         val entries = httpEntries ?: proxyEntries ?: listOf()
 
         val countDownLatch = CountDownLatch(entries.size)
@@ -131,6 +134,7 @@ class EntryImportWorker internal constructor(
         }
 
         countDownLatch.await()
+        tableFilterService.resumeFilter()
     }
 
     override fun handleProgress(chunks: List<Int>) {

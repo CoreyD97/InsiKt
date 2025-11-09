@@ -14,6 +14,7 @@ import com.coreyd97.insikt.util.PREF_SORT_ORDER
 import com.coreyd97.insikt.view.shared.BooleanRenderer
 import com.coreyd97.insikt.view.shared.RequestViewer
 import com.coreyd97.montoyautilities.Preference
+import com.coreyd97.montoyautilities.StorageType
 import com.google.inject.name.Named
 import org.apache.logging.log4j.LogManager
 import java.awt.Component
@@ -27,7 +28,6 @@ import javax.swing.event.RowSorterEvent
 import javax.swing.event.TableModelEvent
 import javax.swing.table.TableCellRenderer
 import javax.swing.table.TableRowSorter
-import kotlin.concurrent.thread
 
 class LogTable(
     val montoya: MontoyaApi,
@@ -44,6 +44,7 @@ class LogTable(
     val sorter: TableRowSorter<LogTableModel> = TableRowSorter(this.dataModel)
     var sortOrder by Preference(PREF_SORT_ORDER, SortOrder.UNSORTED)
     var sortColumn by Preference(PREF_SORT_COLUMN, -1)
+    var isFiltering by Preference("tableIsFiltering", false, storage = StorageType.TEMP)
 
     var currentFilter: FilterRule? = null
         private set
@@ -214,37 +215,26 @@ class LogTable(
         }
     }
 
-    private fun createRowFilter(filter: FilterRule): RowFilter<LogTableModel, Int> {
-        return object : RowFilter<LogTableModel, Int>() {
+    private fun asyncRowFilter(filter: FilterRule) {
+        sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
             override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
-                val index = entry.identifier
-                val tableModel = entry.model
-                val logEntry = tableModel.getRow(index)
-                return filterLibrary.test(filter, logEntry)
+                return false
             }
         }
-    }
-
-    private fun asyncRowFilter(filter: FilterRule) {
-//        val current = Instant.now()
-//        logger.info("Starting async row filter: ${current.toEpochMilli()}")
+        isFiltering = true
         dataModel.buildFilterList(filter, {
-//            val finish = Instant.now()
-//            logger.info("Finished async row filter: ${finish.toEpochMilli()}. Delta: ${finish.minusMillis(current.toEpochMilli()).toEpochMilli()}")
             sorter.rowFilter = object : RowFilter<LogTableModel, Int>() {
                 override fun include(entry: Entry<out LogTableModel, out Int>): Boolean {
                     val logEntry = entry.model.getRow(entry.identifier)
                     return dataModel.entriesMatchingFilter.contains(logEntry)
                 }
             }
+            isFiltering = false
         }).execute()
     }
 
     override fun onFilterApplied(filter: FilterRule) {
-//        sorter.rowFilter = createRowFilter(filter)
         asyncRowFilter(filter)
-
-
 
         if (selectedRow != -1) {
             scrollRectToVisible(getCellRect(selectedRow, 0, true))

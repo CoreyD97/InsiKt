@@ -21,6 +21,7 @@ import java.awt.GridBagConstraints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.concurrent.atomic.AtomicInteger
+import javax.swing.JLabel
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JScrollPane
@@ -77,8 +78,15 @@ class LogViewImpl @Inject constructor(
         requestViewer, "Request/Response", VariableViewPanel.View.VERTICAL
     )
 
-    init {
+    var isFiltering by Preference("tableIsFiltering", false, storage = StorageType.TEMP) { _, new ->
+        if(new){
+            tableScrollPane.setViewportView(JLabel("Filtering..."))
+        }else{
+            tableScrollPane.setViewportView(logTable)
+        }
+    }
 
+    init {
         tableScrollPane.addMouseWheelListener {
             val scrollBar = tableScrollPane.verticalScrollBar
             stickToBottom = scrollBar.value + scrollBar.height >= scrollBar.maximum
