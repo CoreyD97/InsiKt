@@ -2,10 +2,12 @@ package com.coreyd97.insikt.view
 
 import com.coreyd97.insikt.logging.logentry.FieldGroup
 import com.coreyd97.insikt.logging.logentry.LogEntryField
+import com.coreyd97.montoyautilities.Alignment
 import com.coreyd97.montoyautilities.panelBuilder
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
+import java.awt.GridBagConstraints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
@@ -203,17 +205,25 @@ class HelpPanel : JPanel() {
         val overviewScroll = JScrollPane(overviewPane)
         val fieldScroll = JScrollPane(fieldPane)
 
-        val panel = panelBuilder {
-            column {
-                add(overviewTitle)
-                gbc.weighty = 1.0
-                add(overviewScroll)
-            }
-            separator(JSeparator.VERTICAL)
-            column {
-                add(fieldTitle)
-                gbc.weighty = 1.0
-                add(fieldScroll)
+        val panel = panelBuilder(childAlignment = Alignment.FILL) {
+            gbc.fill = GridBagConstraints.BOTH
+            row(weightY = 1) {
+                gbc.fill = GridBagConstraints.BOTH
+                column {
+                    add(overviewTitle)
+                    gbc.weighty = 1.0
+                    gbc.fill = GridBagConstraints.BOTH
+                    add(overviewScroll)
+                }
+                column(weightX = 0) {
+                    separator(JSeparator.VERTICAL)
+                }
+                column {
+                    add(fieldTitle)
+                    gbc.weighty = 1.0
+                    gbc.fill = GridBagConstraints.BOTH
+                    add(fieldScroll)
+                }
             }
         }
 
